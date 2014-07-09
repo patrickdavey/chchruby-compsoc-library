@@ -4,8 +4,10 @@ class Borrower < ActiveRecord::Base
 
   validates_presence_of :name
 
+  before_create :generate_code
+
   def overdue_books
-    [] # FIXME
+    books.select { |b| b.overdue? }
   end
 
   def available_books
@@ -13,15 +15,21 @@ class Borrower < ActiveRecord::Base
   end
 
   def at_limit?
-    false # FIXME
+    limit && current_loan_count >= limit
   end
 
   def current_loan_count
-    0 #FIXME
+    books.size
   end
 
   def current_overdue_count
-    0 #FIXME
+    overdue_books.size
+  end
+
+  private
+
+  def generate_code
+    self.code ||= "B%08d" % rand(99_999)
   end
 
 end

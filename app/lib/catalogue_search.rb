@@ -13,7 +13,9 @@ class CatalogueSearch
 private
 
   def matches?(book)
-    false # FIXME
+    (@params[:title] && book.title.downcase[@params[:title]]) ||
+    (@params[:author] && book.author.downcase[@params[:author]]) ||
+    (@keyword && book.keyword_array.any? { |k| k[@keyword.downcase] })
   end
 
 end
